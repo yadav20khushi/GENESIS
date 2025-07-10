@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GENESIS - 이미지 선택</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .header {
+            height: 60px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            justify-content: space-between;
+        }
+
+        .back-btn {
+            color: #888;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .main-layout {
+            display: flex;
+            height: calc(100vh - 60px);
+        }
+
+        .chat-panel {
+            width: 30%;
+            background: #1a1a1a;
+            border-right: 1px solid #333;
+            padding: 20px;
+        }
+
+        .content-panel {
+            width: 70%;
+            background: #0a0a0a;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .images-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .image-card {
+            background: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .image-card:hover,
+        .image-card.selected {
+            border-color: #6366f1;
+            transform: translateY(-2px);
+        }
+
+        .image-placeholder {
+            width: 100%;
+            aspect-ratio: 1;
+            background: #252525;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+
+        .image-info {
+            padding: 16px;
+        }
+
+        .score {
+            font-size: 24px;
+            font-weight: bold;
+            color: #6366f1;
+            margin-bottom: 4px;
+        }
+
+        .stars {
+            color: #f59e0b;
+            margin-bottom: 8px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #6366f1;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .btn-primary {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #888;
+            border: 1px solid #333;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .status-message {
+            background: #252525;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="clip-image.html" class="back-btn">
+            ← 이전 단계
+        </a>
+        <div>생성된 이미지 선택</div>
+        <div></div>
+    </div>
+
+    <div class="main-layout">
+        <div class="chat-panel">
+            <h3 style="margin-bottom: 20px;">💬 AI 평가</h3>
+
+            <div class="status-message">
+                3개의 이미지를 생성했어요!<br><br>
+                가장 높은 점수를 받은 이미지는 따뜻한 조명과 아늑한 분위기를 잘 표현했네요.
+            </div>
+
+            <p style="color: #888; font-size: 14px;">
+                원하는 이미지를 선택하거나, 다시 생성할 수 있어요.
+            </p>
+        </div>
+
+        <div class="content-panel">
+            <h2 style="margin-bottom: 20px;">생성된 이미지 (AI 평가 순)</h2>
+
+            <div class="images-grid">
+                <div class="image-card selected">
+                    <div class="image-placeholder">🏆</div>
+                    <div class="image-info">
+                        <div class="score">92점</div>
+                        <div class="stars">⭐⭐⭐⭐⭐</div>
+                        <span class="badge">추천!</span>
+                    </div>
+                </div>
+
+                <div class="image-card">
+                    <div class="image-placeholder">🥈</div>
+                    <div class="image-info">
+                        <div class="score">88점</div>
+                        <div class="stars">⭐⭐⭐⭐</div>
+                    </div>
+                </div>
+
+                <div class="image-card">
+                    <div class="image-placeholder">🥉</div>
+                    <div class="image-info">
+                        <div class="score">85점</div>
+                        <div class="stars">⭐⭐⭐⭐</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn-secondary">다시 생성</button>
+                <a href="clip-video.html" class="btn-primary">선택하고 영상 만들기</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

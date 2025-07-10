@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GENESIS - 프로젝트 완료</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            height: 60px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            justify-content: space-between;
+        }
+
+        .back-btn {
+            color: #888;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .container {
+            flex: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            width: 100%;
+        }
+
+        .project-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .project-title {
+            font-size: 32px;
+            margin-bottom: 16px;
+        }
+
+        .project-meta {
+            color: #888;
+            font-size: 18px;
+        }
+
+        .clips-list {
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .clip-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid #333;
+            transition: all 0.3s;
+        }
+
+        .clip-item:last-child {
+            border-bottom: none;
+        }
+
+        .clip-item:hover {
+            background: #252525;
+            border-radius: 8px;
+        }
+
+        .clip-check {
+            color: #10b981;
+            font-size: 24px;
+            margin-right: 16px;
+        }
+
+        .clip-info {
+            flex: 1;
+        }
+
+        .clip-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .clip-duration {
+            color: #888;
+            font-size: 14px;
+        }
+
+        .clip-preview {
+            width: 80px;
+            height: 45px;
+            background: #252525;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .total-duration {
+            text-align: center;
+            font-size: 24px;
+            margin: 30px 0;
+            padding: 20px;
+            background: #252525;
+            border-radius: 12px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .btn-primary {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            background: #5558e3;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid #333;
+            padding: 16px 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            border-color: #666;
+            background: #1a1a1a;
+        }
+
+        .files-section {
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .files-header {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #ccc;
+        }
+
+        .file-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            background: #252525;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            color: #888;
+            transition: all 0.3s;
+        }
+
+        .file-item:hover {
+            background: #2a2a2a;
+            color: #fff;
+        }
+
+        .file-icon {
+            margin-right: 12px;
+            font-size: 20px;
+        }
+
+        .next-step-banner {
+            margin-top: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .next-step-title {
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .next-step-desc {
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="project-dashboard.html" class="back-btn">
+            ← 프로젝트 대시보드
+        </a>
+        <div>프로젝트 완료</div>
+        <div></div>
+    </div>
+
+    <div class="container">
+        <div class="project-header">
+            <h1 class="project-title">🎉 카페 브랜드 광고 완성!</h1>
+            <p class="project-meta">모든 클립이 성공적으로 생성되었습니다</p>
+        </div>
+
+        <div class="clips-list">
+            <div class="clip-item">
+                <span class="clip-check">✅</span>
+                <div class="clip-info">
+                    <div class="clip-name">클립 1: 카페 외관</div>
+                    <div class="clip-duration">3초</div>
+                </div>
+                <div class="clip-preview">🏠</div>
+            </div>
+
+            <div class="clip-item">
+                <span class="clip-check">✅</span>
+                <div class="clip-info">
+                    <div class="clip-name">클립 2: 바리스타</div>
+                    <div class="clip-duration">5초</div>
+                </div>
+                <div class="clip-preview">☕</div>
+            </div>
+
+            <div class="clip-item">
+                <span class="clip-check">✅</span>
+                <div class="clip-info">
+                    <div class="clip-name">클립 3: 커피 받기</div>
+                    <div class="clip-duration">4초</div>
+                </div>
+                <div class="clip-preview">🤝</div>
+            </div>
+
+            <div class="clip-item">
+                <span class="clip-check">✅</span>
+                <div class="clip-info">
+                    <div class="clip-name">클립 4: 창가 씬</div>
+                    <div class="clip-duration">5초</div>
+                </div>
+                <div class="clip-preview">🪟</div>
+            </div>
+
+            <div class="clip-item">
+                <span class="clip-check">✅</span>
+                <div class="clip-info">
+                    <div class="clip-name">클립 5: 로고</div>
+                    <div class="clip-duration">3초</div>
+                </div>
+                <div class="clip-preview">🏷️</div>
+            </div>
+        </div>
+
+        <div class="total-duration">
+            총 길이: <strong>20초</strong>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn-primary">전체 다운로드</button>
+            <button class="btn-secondary">개별 다운로드</button>
+        </div>
+
+        <div class="files-section">
+            <h3 class="files-header">생성된 파일</h3>
+            <div class="file-list">
+                <div class="file-item">
+                    <span class="file-icon">📁</span>
+                    Cafe_Ad_Clip_01_exterior.mp4
+                </div>
+                <div class="file-item">
+                    <span class="file-icon">📁</span>
+                    Cafe_Ad_Clip_02_barista.mp4
+                </div>
+                <div class="file-item">
+                    <span class="file-icon">📁</span>
+                    Cafe_Ad_Clip_03_receive.mp4
+                </div>
+                <div class="file-item">
+                    <span class="file-icon">📁</span>
+                    Cafe_Ad_Clip_04_window.mp4
+                </div>
+                <div class="file-item">
+                    <span class="file-icon">📁</span>
+                    Cafe_Ad_Clip_05_logo.mp4
+                </div>
+            </div>
+        </div>
+
+        <div class="next-step-banner">
+            <h2 class="next-step-title">다음 단계가 준비되어 있습니다</h2>
+            <p class="next-step-desc">AI Editor로 자동 편집을 시작해보세요</p>
+            <a href="ai-editor-preview.html" class="btn-primary">AI Editor 미리보기</a>
+        </div>
+    </div>
+</body>
+</html>
