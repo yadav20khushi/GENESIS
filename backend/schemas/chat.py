@@ -8,7 +8,7 @@ class Scene(BaseModel):
 
 class Cut(BaseModel):
     id: int
-    scene_id: int
+    scene_id: Optional[int] = None
     description: str
 
 class Keyframe(BaseModel):

@@ -240,7 +240,7 @@ const AiDiscoveryChat = () => {
   const Sidebar = () => (
     <div className={`${sidebarCollapsed ? 'w-16' : 'w-64'} bg-black/20 backdrop-blur-sm border-r border-white/10 flex flex-col transition-all duration-300`}>
       <div className="p-6 border-b border-white/10 flex items-center justify-between">
-        {!sidebarCollapsed && <h2 className="text-white font-bold text-xl">Video Creator</h2>}
+        {!sidebarCollapsed && <h2 className="text-white font-bold text-xl">Genesis AI</h2>}
         <button
           onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
           className="text-gray-300 hover:text-white transition-colors p-1"
@@ -322,21 +322,17 @@ const AiDiscoveryChat = () => {
   );
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+    <div className="flex h-screen bg-gradient-to-br from-purple-950 via-purple-900 to-pink-950">
       <Sidebar />
 
       <div className="flex-1 flex flex-col">
         {/* Header */}
         <div className="bg-black/20 backdrop-blur-sm border-b border-white/10 px-6 py-4 flex items-center justify-between">
           <div>
-            <h1 className="text-white text-2xl font-bold">AI Discovery Chat</h1>
+            <h1 className="text-white text-2xl font-bold"></h1>
             {currentScene && (
               <p className="text-gray-300 text-sm mt-1">Working on: Scene {currentScene.id} - {currentScene.title}</p>
             )}
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-            <span className="text-gray-300 text-sm">Backend Connected</span>
           </div>
         </div>
 

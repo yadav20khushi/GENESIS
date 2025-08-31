@@ -189,7 +189,7 @@ const GentaHomepage = ({ onStartProject }) => {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 px-6 bg-black/90">
+      <section id="features" className="py-20 px-6 bg-gradient-to-r from-purple-600/20 to-pink-600/20">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
@@ -220,7 +220,7 @@ const GentaHomepage = ({ onStartProject }) => {
       </section>
 
       {/* Workflow Section */}
-      <section id="workflow" className="py-20 px-6 bg-black/60">
+      <section id="workflow" className="py-20 px-6 bg-gradient-to-r from-purple-600/20 to-pink-600/20">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">How It Works</h2>
@@ -249,7 +249,7 @@ const GentaHomepage = ({ onStartProject }) => {
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" className="py-20 px-6 bg-black/90">
+      <section id="testimonials" className="py-20 px-6 bg-gradient-to-r from-purple-600/20 to-pink-600/20">
         <div className="max-w-6xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">Loved by <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Creators</span></h2>
           <p className="text-xl text-gray-300 mb-12">See what our users have to say</p>
@@ -293,18 +293,18 @@ const GentaHomepage = ({ onStartProject }) => {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-6 border-t border-white/10 bg-black/90">
+      <footer className="py-20 px-6 bg-gradient-to-r from-purple-600/20 to-pink-600/20">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between">
           <div className="flex items-center space-x-3 mb-4 md:mb-0">
             <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
               <Sparkles className="w-4 h-4 text-white" />
             </div>
             <div>
-              <div className="font-bold">Genta</div>
-              <div className="text-xs text-gray-400">powered by Genesis AI</div>
+              <div className="font-bold">GenTA</div>
+              <div className="text-xs text-gray-400">powered by GenesisAI</div>
             </div>
           </div>
-          <div className="text-sm text-gray-400">© 2025 Genta. All rights reserved. Built with 💜 for creators.</div>
+          <div className="text-sm text-gray-400">© 2025 GenTA. All rights reserved. Built with 💜 for creators.</div>
         </div>
       </footer>
     </>

@@ -16,7 +16,7 @@ def send_message_to_letta(user_message: str) -> dict:
             role="user",
             content=[TextContent(text=user_message)],
         )],
-        max_steps=1,
+        max_steps=2,
         include_return_message_types=["assistant_message"]
     )
 
