@@ -12,9 +12,9 @@ class Cut(BaseModel):
     description: str
 
 class Keyframe(BaseModel):
-    id: int
+    id: Optional[int] = None
     cut_id: int
-    image_url: str
+    image_url: Optional[str] = None
 
 class ChatRequest(BaseModel):
     message: str

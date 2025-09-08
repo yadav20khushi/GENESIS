@@ -1,5 +1,6 @@
 from letta_client import Letta, MessageCreate, TextContent
 from config import settings
+import json
 
 client = Letta(
     project=settings.LETTA_PROJECT,
@@ -7,20 +8,16 @@ client = Letta(
 )
 
 def send_message_to_letta(user_message: str) -> dict:
-    """
-    Sends a message to Letta agent and returns structured JSON.
-    """
     response = client.agents.messages.create(
         agent_id=settings.AGENT_ID,
         messages=[MessageCreate(
             role="user",
             content=[TextContent(text=user_message)],
         )],
-        max_steps=2,
+        max_steps=1,
         include_return_message_types=["assistant_message"]
     )
 
-    # Default response format
     data = {
         "reply": "No response from agent.",
         "scenes": [],
@@ -32,15 +29,19 @@ def send_message_to_letta(user_message: str) -> dict:
         assistant_message = response.messages[0]
         if hasattr(assistant_message, "content"):
             if isinstance(assistant_message.content, str):
-                data["reply"] = assistant_message.content
+                raw_reply = assistant_message.content
             elif isinstance(assistant_message.content, list):
-                data["reply"] = " ".join([c.text for c in assistant_message.content if hasattr(c, "text")])
+                raw_reply = " ".join([c.text for c in assistant_message.content if hasattr(c, "text")])
+            else:
+                raw_reply = ""
 
-    try:
-        import json
-        parsed = json.loads(data["reply"])
-        data.update(parsed)
-    except:
-        pass  # fallback: plain text reply
+            try:
+                parsed = json.loads(raw_reply)
+                data.update(parsed)
+            except json.JSONDecodeError:
+                data["reply"] = raw_reply
+                data["scenes"] = []
+                data["cuts"] = []
+                data["keyframes"] = []
 
     return data
