@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
-import { Send, MessageCircle, Film, Home, Menu, X, Scissors, Image } from 'lucide-react';
+import { Send, MessageCircle, Home, Menu, X } from 'lucide-react';
 
-const API_BASE = 'http://127.0.0.1:8000';
-
-const AiDiscoveryChat = () => {
+const ModernChatUI = () => {
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -15,87 +12,44 @@ const AiDiscoveryChat = () => {
   ]);
 
   const [inputValue, setInputValue] = useState('');
-  const [scenes, setScenes] = useState([]);
-  const [cuts, setCuts] = useState([]);
-  const [keyframes, setKeyframes] = useState([]);
-  const [currentView, setCurrentView] = useState('main'); // 'main', 'scene-1', 'cuts', 'keyframes', etc.
   const [isLoading, setIsLoading] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [currentScene, setCurrentScene] = useState(null);
-  const [currentCut, setCurrentCut] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const messagesEndRef = useRef(null);
-  const chatContainerRef = useRef(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  useEffect(() => { scrollToBottom(); }, [messages]);
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
-  const handleSendMessage = async (customMessage = null) => {
-    const messageToSend = customMessage || inputValue;
-    if (!messageToSend.trim() || isLoading) return;
+  const handleSendMessage = async () => {
+    if (!inputValue.trim() || isLoading) return;
 
     const userMessage = {
       id: messages.length + 1,
       sender: 'user',
-      content: messageToSend,
+      content: inputValue,
       timestamp: new Date()
     };
 
     setMessages(prev => [...prev, userMessage]);
-    if (!customMessage) setInputValue('');
+    setInputValue('');
     setIsLoading(true);
 
-    try {
-      const res = await axios.post(`${API_BASE}/api/chat`, {
-        message: messageToSend,
-      });
-
-      const data = res.data;
-
+    // Simulate AI response
+    setTimeout(() => {
       const aiResponse = {
         id: userMessage.id + 1,
         sender: 'ai',
-        content: data.reply || 'No reply received.',
-        timestamp: new Date(),
-        hasScenes: false,
-        hasCuts: false,
-        hasKeyframes: false
+        content: `I understand you want to create a video about "${inputValue}". Let me help you break this down into manageable steps. What specific aspects would you like to focus on first?`,
+        timestamp: new Date()
       };
-
-      // Update structured data if available
-      if (data.scenes?.length) {
-        setScenes(data.scenes);
-        aiResponse.hasScenes = true;
-      }
-
-      if (data.cuts?.length) {
-        setCuts(data.cuts);
-        aiResponse.hasCuts = true;
-      }
-
-      if (data.keyframes?.length) {
-        setKeyframes(data.keyframes);
-        aiResponse.hasKeyframes = true;
-      }
-
       setMessages(prev => [...prev, aiResponse]);
-    } catch (err) {
-      console.error('Error sending message:', err);
-      setMessages(prev => [
-        ...prev,
-        {
-          id: userMessage.id + 1,
-          sender: 'ai',
-          content: 'Oops! Something went wrong contacting the assistant. Please try again.',
-          timestamp: new Date()
-        }
-      ]);
-    } finally {
       setIsLoading(false);
-    }
+    }, 1500);
   };
 
   const handleKeyDown = (e) => {
@@ -105,317 +59,160 @@ const AiDiscoveryChat = () => {
     }
   };
 
-  const handleSceneClick = (scene) => {
-    setCurrentScene(scene);
-    setCurrentView(`scene-${scene.id}`);
-    setCuts([]);
-    setKeyframes([]);
-
-    const sceneMessage = `Give me cuts for scene ${scene.id}: ${scene.title}`;
+  const handleNewChat = () => {
     setMessages([
       {
         id: 1,
         sender: 'ai',
-        content: `Let's work on Scene ${scene.id}: ${scene.title}. I'll generate cuts for this scene.`,
+        content: "Hello! I'm here to help you create amazing videos. What kind of video would you like to make today?",
         timestamp: new Date()
       }
     ]);
-
-    // Send message to get cuts for this scene
-    setTimeout(() => {
-      handleSendMessage(sceneMessage);
-    }, 500);
   };
-
-  const handleCutClick = (cut) => {
-    setCurrentCut(cut);
-    setCurrentView('keyframes');
-    setKeyframes([]);
-
-    const cutMessage = `Give me 3 keyframes for cut ${cut.id}: ${cut.description}`;
-    setMessages(prev => [...prev, {
-      id: prev.length + 1,
-      sender: 'user',
-      content: cutMessage,
-      timestamp: new Date()
-    }]);
-
-    // Send message to get keyframes for this cut
-    setTimeout(() => {
-      handleSendMessage(cutMessage);
-    }, 500);
-  };
-
-  const handleKeyframeClick = async (keyframe) => {
-    try {
-      setIsLoading(true);
-      const res = await axios.post(`${API_BASE}/api/generate-video`, {
-        keyframe_id: keyframe.id,
-      });
-
-      setMessages(prev => [...prev, {
-        id: prev.length + 1,
-        sender: 'ai',
-        content: `Video generated successfully! You can view it at: ${res.data.video_url}`,
-        timestamp: new Date()
-      }]);
-    } catch (err) {
-      console.error('Error generating video:', err);
-      setMessages(prev => [...prev, {
-        id: prev.length + 1,
-        sender: 'ai',
-        content: 'Sorry, there was an error generating the video. Please try again.',
-        timestamp: new Date()
-      }]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const SceneCard = ({ scene }) => (
-    <div
-      onClick={() => handleSceneClick(scene)}
-      className="bg-white/10 backdrop-blur-sm rounded-xl p-4 cursor-pointer hover:bg-white/20 transition-all duration-300 border border-white/20 hover:border-purple-400/50 group"
-    >
-      <div className="flex items-center justify-between mb-2">
-        <h4 className="text-white font-semibold text-lg group-hover:text-purple-200 transition-colors">
-          Scene {scene.id}: {scene.title}
-        </h4>
-        {scene.duration && (
-          <span className="text-blue-200 text-sm bg-purple-500/20 px-2 py-1 rounded-lg">
-            {scene.duration}
-          </span>
-        )}
-      </div>
-      {scene.description && (
-        <p className="text-gray-300 text-sm leading-relaxed">{scene.description}</p>
-      )}
-    </div>
-  );
-
-  const CutCard = ({ cut }) => (
-    <div
-      onClick={() => handleCutClick(cut)}
-      className="bg-white/10 backdrop-blur-sm rounded-xl p-4 cursor-pointer hover:bg-white/20 transition-all duration-300 border border-white/20 hover:border-blue-400/50 group"
-    >
-      <div className="flex items-center justify-between mb-2">
-        <h4 className="text-white font-semibold text-lg group-hover:text-blue-200 transition-colors">
-          Cut {cut.id}
-        </h4>
-        {cut.duration && (
-          <span className="text-green-200 text-sm bg-blue-500/20 px-2 py-1 rounded-lg">
-            {cut.duration}
-          </span>
-        )}
-      </div>
-      <p className="text-gray-300 text-sm leading-relaxed">{cut.description}</p>
-    </div>
-  );
-
-  const KeyframeCard = ({ keyframe }) => (
-    <div
-      onClick={() => handleKeyframeClick(keyframe)}
-      className="bg-white/10 backdrop-blur-sm rounded-xl p-4 cursor-pointer hover:bg-white/20 transition-all duration-300 border border-white/20 hover:border-green-400/50 group relative overflow-hidden"
-    >
-      {keyframe.image_url ? (
-        <img
-          src={keyframe.image_url}
-          alt={`Keyframe ${keyframe.id}`}
-          className="w-full h-32 object-cover rounded-lg mb-3"
-        />
-      ) : (
-        <div className="w-full h-32 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-lg mb-3 flex items-center justify-center">
-          <Image size={32} className="text-white/50" />
-        </div>
-      )}
-      <h4 className="text-white font-semibold text-sm group-hover:text-green-200 transition-colors">
-        Keyframe {keyframe.id}
-      </h4>
-      {keyframe.description && (
-        <p className="text-gray-300 text-xs mt-1 leading-relaxed">{keyframe.description}</p>
-      )}
-    </div>
-  );
-
-  const Sidebar = () => (
-    <div className={`${sidebarCollapsed ? 'w-16' : 'w-64'} bg-black/20 backdrop-blur-sm border-r border-white/10 flex flex-col transition-all duration-300`}>
-      <div className="p-6 border-b border-white/10 flex items-center justify-between">
-        {!sidebarCollapsed && <h2 className="text-white font-bold text-xl">Genesis AI</h2>}
-        <button
-          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-          className="text-gray-300 hover:text-white transition-colors p-1"
-        >
-          {sidebarCollapsed ? <Menu size={20} /> : <X size={20} />}
-        </button>
-      </div>
-
-      <nav className="flex-1 p-4 space-y-2">
-        <button
-          onClick={() => {
-            setCurrentView('main');
-            setCurrentScene(null);
-            setCurrentCut(null);
-            setMessages([{
-              id: 1,
-              sender: 'ai',
-              content: "Hello! I'm here to help you create amazing videos. What kind of video would you like to make today?",
-              timestamp: new Date()
-            }]);
-            setScenes([]);
-            setCuts([]);
-            setKeyframes([]);
-          }}
-          className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${
-            currentView === 'main'
-              ? 'bg-purple-500/20 text-purple-200 border border-purple-500/30'
-              : 'text-gray-300 hover:bg-white/5 hover:text-white'
-          } ${sidebarCollapsed ? 'justify-center' : ''}`}
-          title={sidebarCollapsed ? 'Main Chat' : ''}
-        >
-          <Home size={20} />
-          {!sidebarCollapsed && <span>Main Chat</span>}
-        </button>
-
-        {scenes.length > 0 && (
-          <>
-            {!sidebarCollapsed && (
-              <div className="px-4 py-2 text-gray-400 text-sm font-medium">Scenes</div>
-            )}
-            {scenes.map(scene => (
-              <button
-                key={scene.id}
-                onClick={() => handleSceneClick(scene)}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${
-                  currentView === `scene-${scene.id}`
-                    ? 'bg-purple-500/20 text-purple-200 border border-purple-500/30'
-                    : 'text-gray-300 hover:bg-white/5 hover:text-white'
-                } ${sidebarCollapsed ? 'justify-center' : ''}`}
-                title={sidebarCollapsed ? `Scene ${scene.id}` : ''}
-              >
-                <Film size={20} />
-                {!sidebarCollapsed && <span>Scene {scene.id}</span>}
-              </button>
-            ))}
-          </>
-        )}
-
-        {cuts.length > 0 && currentScene && (
-          <>
-            {!sidebarCollapsed && (
-              <div className="px-4 py-2 text-gray-400 text-sm font-medium">Cuts</div>
-            )}
-            {cuts.map(cut => (
-              <button
-                key={cut.id}
-                onClick={() => handleCutClick(cut)}
-                className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all text-gray-300 hover:bg-white/5 hover:text-white"
-                title={sidebarCollapsed ? `Cut ${cut.id}` : ''}
-              >
-                <Scissors size={20} />
-                {!sidebarCollapsed && <span>Cut {cut.id}</span>}
-              </button>
-            ))}
-          </>
-        )}
-      </nav>
-    </div>
-  );
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-purple-950 via-purple-900 to-pink-950">
-      <Sidebar />
+    <div className="flex h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900">
+      {/* Sidebar Overlay for Mobile */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
 
-      <div className="flex-1 flex flex-col">
-        {/* Header */}
-        <div className="bg-black/20 backdrop-blur-sm border-b border-white/10 px-6 py-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-white text-2xl font-bold"></h1>
-            {currentScene && (
-              <p className="text-gray-300 text-sm mt-1">Working on: Scene {currentScene.id} - {currentScene.title}</p>
-            )}
+      {/* Sidebar */}
+      <div className={`${
+        sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+      } lg:translate-x-0 fixed lg:relative z-50 w-64 h-full bg-black/20 backdrop-blur-xl border-r border-white/10 transition-transform duration-300`}>
+        <div className="flex flex-col h-full">
+          {/* Sidebar Header */}
+          <div className="flex items-center justify-between p-6 border-b border-white/10">
+            <h2 className="text-white font-bold text-xl bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              Genesis AI
+            </h2>
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="lg:hidden text-gray-300 hover:text-white transition-colors p-1"
+            >
+              <X size={20} />
+            </button>
+          </div>
+
+          {/* New Chat Button */}
+          <div className="p-4">
+            <button
+              onClick={handleNewChat}
+              className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-all duration-200 border border-white/20 hover:border-purple-400/50"
+            >
+              <MessageCircle size={18} />
+              <span>New Chat</span>
+            </button>
+          </div>
+
+          {/* Chat History */}
+          <div className="flex-1 overflow-y-auto p-4">
+            <div className="space-y-2">
+              <div className="text-gray-400 text-xs uppercase tracking-wide font-medium px-3 py-2">
+                Recent Chats
+              </div>
+              <button className="w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors text-sm">
+                Video about nature...
+              </button>
+              <button className="w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors text-sm">
+                Product demo script...
+              </button>
+              <button className="w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors text-sm">
+                Educational content...
+              </button>
+            </div>
+          </div>
+
+          {/* Sidebar Footer */}
+          <div className="p-4 border-t border-white/10">
+            <div className="text-gray-400 text-xs">
+              Genesis AI • Video Creation Assistant
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Chat Container */}
-        <div
-          ref={chatContainerRef}
-          className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent"
-        >
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Navbar */}
+        <nav className="flex items-center justify-between p-4 bg-black/20 backdrop-blur-xl border-b border-white/10">
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="lg:hidden text-gray-300 hover:text-white transition-colors"
+            >
+              <Menu size={20} />
+            </button>
+            <h1 className="text-white text-xl font-semibold">
+
+            </h1>
+          </div>
+
+          <button
+            onClick={() => window.location.href = '/'}
+            className="flex items-center space-x-2 px-4 py-2 text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200"
+          >
+            <Home size={18} />
+            <span className="hidden sm:inline">Home</span>
+          </button>
+        </nav>
+
+        {/* Chat Messages */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {messages.map((message) => (
-            <div key={message.id} className="space-y-4">
-              <div className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className="max-w-4xl">
-                  {message.sender === 'ai' ? (
-                    <div className="text-gray-400 text-sm mb-2 flex items-center space-x-2">
-                      <MessageCircle size={16} />
-                      <span>AI Assistant</span>
+            <div key={message.id} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+              <div className="max-w-3xl w-full">
+                {message.sender === 'ai' && (
+                  <div className="flex items-center space-x-2 mb-2">
+                    <div className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
+                      <MessageCircle size={12} className="text-white" />
                     </div>
-                  ) : (
-                    <div className="text-gray-400 text-sm mb-2 text-right">
-                      <span>You</span>
-                    </div>
-                  )}
-                  <div className={`rounded-2xl px-6 py-4 ${
-                    message.sender === 'user'
-                      ? 'bg-blue-500 text-white ml-auto'
-                      : 'bg-white/10 backdrop-blur-sm text-white border border-white/20'
-                  }`}>
-                    <p className="text-base leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                    <span className="text-gray-400 text-sm font-medium">Genesis AI</span>
                   </div>
+                )}
+
+                <div className={`rounded-2xl px-6 py-4 ${
+                  message.sender === 'user'
+                    ? 'bg-gradient-to-r from-purple-600 to-purple-500 text-white ml-auto shadow-lg shadow-purple-500/25'
+                    : 'bg-white/10 backdrop-blur-sm text-white border border-white/20 shadow-lg'
+                }`}>
+                  <p className="text-base leading-relaxed whitespace-pre-wrap">
+                    {message.content}
+                  </p>
                 </div>
+
+                {message.sender === 'user' && (
+                  <div className="text-right mt-1">
+                    <span className="text-gray-400 text-xs">You</span>
+                  </div>
+                )}
               </div>
-
-              {/* Scene Cards */}
-              {message.hasScenes && scenes.length > 0 && (
-                <div className="space-y-4 max-w-4xl">
-                  <div className="text-purple-200 text-lg font-semibold mb-4">Script Scenes</div>
-                  <div className="grid gap-4">
-                    {scenes.map(scene => (
-                      <SceneCard key={scene.id} scene={scene} />
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Cut Cards */}
-              {message.hasCuts && cuts.length > 0 && (
-                <div className="space-y-4 max-w-4xl">
-                  <div className="text-blue-200 text-lg font-semibold mb-4">Scene Cuts</div>
-                  <div className="grid gap-4">
-                    {cuts.map(cut => (
-                      <CutCard key={cut.id} cut={cut} />
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Keyframe Cards */}
-              {message.hasKeyframes && keyframes.length > 0 && (
-                <div className="space-y-4 max-w-4xl">
-                  <div className="text-green-200 text-lg font-semibold mb-4">Keyframes</div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {keyframes.map(keyframe => (
-                      <KeyframeCard key={keyframe.id} keyframe={keyframe} />
-                    ))}
-                  </div>
-                  <div className="text-gray-400 text-sm mt-2">
-                    Click on a keyframe to generate the video
-                  </div>
-                </div>
-              )}
             </div>
           ))}
 
           {isLoading && (
             <div className="flex justify-start">
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl px-6 py-4 border border-white/20">
-                <div className="flex items-center space-x-2">
-                  <div className="flex space-x-1">
-                    <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                    <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+              <div className="max-w-3xl w-full">
+                <div className="flex items-center space-x-2 mb-2">
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
+                    <MessageCircle size={12} className="text-white" />
                   </div>
-                  <span className="text-white/80 text-sm">AI is thinking...</span>
+                  <span className="text-gray-400 text-sm font-medium">Genesis AI</span>
+                </div>
+
+                <div className="bg-white/10 backdrop-blur-sm rounded-2xl px-6 py-4 border border-white/20">
+                  <div className="flex items-center space-x-3">
+                    <div className="flex space-x-1">
+                      <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                      <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                    </div>
+                    <span className="text-white/80 text-sm">Thinking...</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -425,25 +222,38 @@ const AiDiscoveryChat = () => {
         </div>
 
         {/* Input Area */}
-        <div className="bg-black/20 backdrop-blur-sm border-t border-white/10 p-6">
-          <div className="flex space-x-4">
-            <textarea
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Tell me about your video idea..."
-              className="flex-1 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl px-6 py-4 text-white placeholder-gray-400 focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-400/20 resize-none"
-              rows="1"
-              style={{minHeight: '60px'}}
-            />
-            <button
-              onClick={handleSendMessage}
-              disabled={!inputValue.trim() || isLoading}
-              className="bg-purple-500 hover:bg-purple-600 disabled:bg-purple-500/50 text-white rounded-2xl px-8 py-4 font-semibold transition-all duration-200 flex items-center space-x-2 disabled:cursor-not-allowed"
-            >
-              <Send size={20} />
-              <span>Send</span>
-            </button>
+        <div className="p-6 bg-black/20 backdrop-blur-xl border-t border-white/10">
+          <div className="max-w-4xl mx-auto">
+            <div className="relative flex items-end space-x-4">
+              <div className="flex-1 relative">
+                <textarea
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Tell me about your video idea..."
+                  className="w-full bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl px-6 py-4 pr-12 text-white placeholder-gray-400 focus:outline-none focus:border-purple-400 focus:ring-2 focus:ring-purple-400/20 resize-none transition-all duration-200"
+                  rows="1"
+                  style={{
+                    minHeight: '56px',
+                    maxHeight: '200px'
+                  }}
+                />
+              </div>
+
+              <button
+                onClick={handleSendMessage}
+                disabled={!inputValue.trim() || isLoading}
+                className="bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 disabled:from-purple-600/50 disabled:to-purple-500/50 text-white rounded-xl p-3 font-semibold transition-all duration-200 flex items-center justify-center disabled:cursor-not-allowed shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40"
+              >
+                <Send size={20} />
+              </button>
+            </div>
+
+            <div className="text-center mt-3">
+              <p className="text-gray-400 text-xs">
+                Press Enter to send, Shift + Enter for new line
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -451,4 +261,4 @@ const AiDiscoveryChat = () => {
   );
 };
 
-export default AiDiscoveryChat;
+export default ModernChatUI;
