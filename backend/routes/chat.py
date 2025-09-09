@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from schemas.chat import ChatRequest, ChatResponse
-from agent import send_message_to_letta
+from backend.schemas.chat import ChatRequest, ChatResponse
+from backend.agent import send_message_to_letta
 
 router = APIRouter()
 

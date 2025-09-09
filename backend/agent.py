@@ -1,5 +1,5 @@
 from letta_client import Letta, MessageCreate, TextContent
-from config import settings
+from backend.config import settings
 import json
 
 client = Letta(
