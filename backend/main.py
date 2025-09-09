@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routes import chat
-from config import settings
+from backend.routes import chat
+from backend.config import settings
 
 # Initialize FastAPI app
 app = FastAPI(
