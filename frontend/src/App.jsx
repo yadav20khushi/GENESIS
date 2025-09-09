@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Home from "./components/Home";
+import Home from "./components/home";
 import AiDiscoveryChat from "./components/AiDiscoveryChat";
 
 export default function App() {
